@@ -63,8 +63,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and build
-        working-directory: sqlbot-xpack/xpack_static
+        working-directory: ./xpack_static
         run: |
+          pwd
+          ls -alt
           npm install
           npm run build:prod
       - name: Set up Python
