@@ -67,45 +67,32 @@ jobs:
       - name: Install and build
         working-directory: ./sqlbot-xpack/xpack_static
         run: |
-          pwd
-          ls -alt
           npm install
           npm run build:prod
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
           pip install cython wheel twine
-
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
-
       - name: Install dependencies
         run: uv sync
-          
       - name: Build encrypted
         run: python build_scripts/build.py
-
       - name: Pre build wheel
-        run: python ./build_scripts/format.py encrypted
-      
+        run: python ./build_scripts/format.py encrypted   
       - name: Build wheel
         run: python -m pip wheel --no-deps -w dist .
-
       - name: Finish build wheek
         run: python ./build_scripts/format.py
-
       - name: Show wheel
         run: unzip -l dist/*
-        
       - name: Publish to repository
         if: ${{ inputs.publish }}
         run: twine upload --repository-url ${{ inputs.repository == 'pypi' && 'https://upload.pypi.org/legacy/' || 'https://test.pypi.org/legacy/' }} -u __token__ -p ${{ inputs.repository == 'pypi' && secrets.FORMAL_PYPI_API_TOKEN || secrets.PYPI_API_TOKEN }} dist/*.whl --verbose
-
-      
