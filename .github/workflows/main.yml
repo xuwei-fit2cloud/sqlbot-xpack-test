@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and build
-        # working-directory: ./xpack_static
+        working-directory: ./sqlbot-xpack/xpack_static
         run: |
           pwd
           ls -alt
