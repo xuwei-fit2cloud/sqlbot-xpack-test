@@ -45,10 +45,12 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     environment: sqlbot-xpack-env
+    defaults:
+      run:
+        working-directory: ./sqlbot-xpack
     strategy:
       matrix:
         os: ${{ fromJSON(inputs.target_os) }}
-
     steps:
       - uses: actions/checkout@v4
       - name: Check out SQLBot xpack repo
@@ -76,7 +78,6 @@ jobs:
 
       - name: Install build tools
         run: |
-          cd sqlbot-xpack
           python -m pip install --upgrade pip
           pip install cython wheel twine
 
@@ -86,34 +87,22 @@ jobs:
           version: "latest"
 
       - name: Install dependencies
-        run: |
-          cd sqlbot-xpack
-          uv sync
+        run: uv sync
           
       - name: Build encrypted
-        run: |
-          cd sqlbot-xpack
-          python build_scripts/build.py
+        run: python build_scripts/build.py
 
       - name: Pre build wheel
-        run: |
-          cd sqlbot-xpack
-          python ./build_scripts/format.py encrypted
+        run: python ./build_scripts/format.py encrypted
       
       - name: Build wheel
-        run: |
-          cd sqlbot-xpack
-          python -m pip wheel --no-deps -w dist .
+        run: python -m pip wheel --no-deps -w dist .
 
       - name: Finish build wheek
-        run: |
-          cd sqlbot-xpack
-          python ./build_scripts/format.py
+        run: python ./build_scripts/format.py
 
       - name: Show wheel
-        run: |
-          cd sqlbot-xpack
-          unzip -l dist/*
+        run: unzip -l dist/*
         
       - name: Publish to repository
         if: ${{ inputs.publish }}
