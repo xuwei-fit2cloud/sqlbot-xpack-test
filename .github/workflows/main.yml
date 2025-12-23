@@ -50,14 +50,14 @@ jobs:
         os: ${{ fromJSON(inputs.target_os) }}
 
     steps:
+      - uses: actions/checkout@v4
       - name: Check out SQLBot xpack repo
         uses: actions/checkout@v4
         with:
           repository: dataease/sqlbot-xpack
           ref: ${{ inputs.xpack_branch }}
-          path: sqlbot-xpack
+          path: ./sqlbot-xpack
           token: ${{ secrets.GH_TOKEN }}
-      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
